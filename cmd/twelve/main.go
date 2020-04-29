@@ -13,12 +13,15 @@ import (
 )
 
 func main() {
-	logrus.Info("Hello world")
+	log := logrus.New()
+	log.SetOutput(os.Stdout)
+
+	log.Info("Starting app...")
 
 	port := os.Getenv("PORT")
 
 	if len(port) == 0 {
-		logrus.Fatal("PORT is not set")
+		log.Fatal("PORT is notg set")
 	}
 
 	router := mux.NewRouter()
@@ -38,7 +41,11 @@ func main() {
 
 	<-interrupt
 
+	log.Info("Stopping app...")
+
 	timeout, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelFunc()
 	serv.Shutdown(timeout)
+
+	log.Info("Stopped ")
 }
